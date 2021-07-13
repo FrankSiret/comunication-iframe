@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Main</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<script type="text/javascript">
+		function init() {
+			document.addEventListener(
+				"event-from-iframe",
+				function (event) {
+					console.log('recieved:', event.detail);
+					alert("msg recieved: " + JSON.stringify(event.detail));
+				},
+				false
+			);
+			window.onmessage = function (e) {
+				if (e.data == 'hello') {
+					console.log('Main: recieved !')
+					alert('It works!');
+				}
+			};
+		}
+
+		function parent2iframe() {
+			console.log('sending from Main...');
+			const myIframe = document.getElementById('child-iFrame');
+			myIframe.contentWindow.postMessage('hello', '*');
+		}
+	</script>
+</head>
+
+<body onload="init()">
+	<h1>Main</h1>
+	<a href="javascript:parent2iframe();">Send to iframe</a>
+	<p>
+		Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident, optio!
+	</p>
+	<div class="child">
+		<iframe src="child.html" id="child-iFrame" type="text/html"></iframe>
+	</div>
+	<div class="byhours">
+		<!-- <iframe src="http://www.byhours.com" id="byhours"></iframe> -->
+	</div>
+</body>
+
+</html>

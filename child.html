@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Child-iframe</title>
+	<script type="text/javascript">
+		var detail = {
+			msg: "hello world!",
+			year: 2021,
+		};
+
+		function onLoad() {
+			window.onmessage = function (e) {
+				if (e.data == 'hello') {
+					console.log('Child: recieved !')
+					alert('It works!');
+				}
+			};
+		}
+
+		function iframe2parent() {
+			console.log('sending from Child...');
+			window.top.postMessage('hello', '*')
+		}
+
+		function sendEvent() {
+			if (typeof Event === "function") {
+				var event = new CustomEvent("event-from-iframe", {
+					detail,
+				});
+			} else {
+				var event = document.createEvent("CustomEvent");
+				event.initCustomEvent(
+					"event-from-iframe",
+					true,
+					true,
+					detail
+				);
+			}
+			parent.document.dispatchEvent(event);
+		}
+	</script>
+</head>
+
+<body onload="onLoad()">
+	<h1>Child</h1>
+	<a href="javascript:iframe2parent();">Send to parent using postMessage</a>
+	<p>Lorem ipsum dolor sit amet.</p>
+	<button onclick="sendEvent()">Send to parent using createEvent</button>
+</body>
+
+</html>
